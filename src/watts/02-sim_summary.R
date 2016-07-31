@@ -5,8 +5,8 @@ library(stringr)
 
 rm(list = ls())
 
-load('sim_summary.RData')
-load('params.RData')
+load('output/sim_summary.RData')
+load('output/params.RData')
 
 for (i in 1:nrow(params)) {
 
@@ -26,14 +26,25 @@ get_p <- sapply(str_split(all_df$graph.generator, 'p='), '[[', 2)
 all_df$graph_p <- str_replace(string = get_p,
                               pattern = '\\)',
                               replacement = '')
+
+all_df$e_degree <- as.numeric(all_df$graph_p) * 1000
+all_df$e_degree <- factor(all_df$e_degree,
+                          levels = c(seq(0, 15, 1), 500))
+
 all_df$graph_p <- factor(all_df$graph_p)
+
 all_df$agent.threshold <- factor(all_df$agent.threshold,
-                                 levels=seq(0.10, 0.25, 0.01))
+                                 levels = seq(0.10, 0.25, 0.01))
 
 
 
 ggplot(data = all_df, aes(x = p_flipped)) +
-    geom_histogram() +
+    theme_minimal() +
+    geom_histogram(binwidth = 0.1) +
     #geom_density() +
-    facet_grid(graph_p ~ agent.threshold,
-               scales = 'fixed', as.table = FALSE)
+    scale_x_continuous(breaks = c(0, 0.50, 1.00)) +
+    scale_y_continuous(breaks = c(0, 50, 100)) +
+    facet_grid(e_degree ~ agent.threshold,
+               drop = FALSE,
+               scales = 'fixed', as.table = FALSE) +
+    theme(axis.text.x  = element_text(angle = 90, vjust = 0.5))
