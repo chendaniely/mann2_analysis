@@ -22,6 +22,7 @@ for (i in 1:nrow(params)) {
 all_df <- bind_rows(sim_summary)
 
 get_p <- sapply(str_split(all_df$graph.generator, 'p='), '[[', 2)
+
 all_df$graph_p <- str_replace(string = get_p,
                               pattern = '\\)',
                               replacement = '')
