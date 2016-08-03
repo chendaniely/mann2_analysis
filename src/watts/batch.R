@@ -25,7 +25,10 @@ cell_counts <- table(unlisted_configs$agent.threshold,
 
 params <- as.data.frame(cell_counts, stringsAsFactor=FALSE)
 names(params) <- c(var_interest, 'Freq')
+params <- params[params$Freq > 0, ]
 print(dim(params))
+
+save(params, file='output/params.RData')
 
 sim_summary <- list()
 source('./src/helper.R')
@@ -45,12 +48,23 @@ for (p in 1:nrow(params)) {
         summarize(mean = mean(state),
                   p_flipped = sum(state) / n())
     ##
-    print(sim_analysis)
-    print(class(sim_analysis))
+    ## print(sim_analysis)
+    ## print(class(sim_analysis))
     sim_summary[p] <- list(sim_analysis)
-    print('**********')
+    ## print('**********')
 }
-print(sim_summary)
+## print(sim_summary)
+save(sim_summary, file='output/sim_summary.RData')
 
-save(sim_summary, file='sim_summary.RData')
-save(params, file='params.RData')
+source('./src/helper.R')
+for (p in 1:nrow(params)) {
+    df_param <- params[p, ]
+    sims <- unlisted_configs[
+        unlisted_configs$agent.threshold == df_param$agent.threshold &
+      unlisted_configs$graph.generator == df_param$graph.generator, ]
+    sim_num <- row.names(sims)
+    param_configs <- configs[as.numeric(sim_num)]
+    sim_dirs <- dirname(param_configs)
+    edge_lists <- get_param_networks(sim_dirs)
+}
+save(edge_lists, file = 'output/edge_lists.RData')
