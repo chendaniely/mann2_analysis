@@ -1,6 +1,7 @@
 *.RData
 *~
 *.pdf
+output/*
 
 # History files
 .Rhistory
