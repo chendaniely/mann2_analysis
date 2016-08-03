@@ -1,10 +1,14 @@
 library(yaml)
 library(dplyr)
 
-configs <- list.files(path=file.path('..', 'mann2_output'),
-                      pattern='config_model_watts.yaml',
-                      full.names=TRUE,
-                      recursive=TRUE)
+rm(list = ls())
+
+source('./src/helper.R')
+
+configs <- list.files(path = file.path('..', 'mann2_output'),
+                      pattern = 'config_model_watts.yaml',
+                      full.names = TRUE,
+                      recursive = TRUE)
 configs
 
 # 600 configs is about 4.8 mb in memory
@@ -12,7 +16,7 @@ sim_configs <- lapply(configs, yaml.load_file)
 
 unlisted_configs <- sapply(sim_configs, unlist)
 unlisted_configs <- as.data.frame(t(unlisted_configs),
-                                  stringsAsFactors=FALSE)
+                                  stringsAsFactors = FALSE)
 
 ## lapply(unlisted_configs, table)
 
@@ -23,7 +27,7 @@ var_interest <- c('agent.threshold', 'graph.generator')
 cell_counts <- table(unlisted_configs$agent.threshold,
                      unlisted_configs$graph.generator)
 
-params <- as.data.frame(cell_counts, stringsAsFactor=FALSE)
+params <- as.data.frame(cell_counts, stringsAsFactor = FALSE)
 names(params) <- c(var_interest, 'Freq')
 params <- params[params$Freq > 0, ]
 print(dim(params))
@@ -31,7 +35,7 @@ print(dim(params))
 save(params, file='output/params.RData')
 
 sim_summary <- list()
-source('./src/helper.R')
+
 for (p in 1:nrow(params)) {
     df_param <- params[p, ]
     sims <- unlisted_configs[
