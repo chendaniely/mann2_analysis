@@ -59,9 +59,8 @@ g <- ggplot(data = all_df, aes(x = p_flipped)) +
 g + facet_grid(e_degree ~ agent.threshold,
                drop = FALSE,
                scales = 'fixed', as.table = FALSE)
-ggsave(filename = 'output/p_flipped_all.png', dpi = 300)
+ggsave(filename = 'output/p_flipped_all.png', dpi = 300, width = 10, height = 8)
 
 g + facet_grid(e_degree ~ agent.threshold,
-               #drop = FALSE,
                scales = 'fixed', as.table = FALSE)
-ggsave(filename = 'output/p_flipped_dropped.png', dpi = 300)
+ggsave(filename = 'output/p_flipped_dropped.png', dpi = 300, width = 10, height = 8)
