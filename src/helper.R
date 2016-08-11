@@ -44,13 +44,16 @@ get_single_sim_edge_list <- function(path,
                                      sim_edge_list_name='edge_list_nx.gz',
                                      config_name='config_model_watts.yaml') {
     edge_list_path <- file.path(path, sim_edge_list_name)
+
     tryCatch({
         el_df <- read_delim(edge_list_path, delim = ' ',
                             col_names = c('source', 'target', 'na'),
                             na = c("{}"))
         el_df <- el_df[, ! names(el_df) %in% c('na'), drop = FALSE]
         return(el_df)
-    }, error = function(err){
+    }, error = function(err) {
+        cat('Found an error in edge list loading')
+        cat(err)
         d <- data.frame('source'=NA, 'target'=NA)
         return(d)
     })
@@ -58,4 +61,5 @@ get_single_sim_edge_list <- function(path,
 
 get_param_networks <- function(paths) {
     edge_lists_df <- lapply(paths, get_single_sim_edge_list)
+    return(edge_lists_df)
 }
